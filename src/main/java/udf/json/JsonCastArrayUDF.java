@@ -51,9 +51,8 @@ public class JsonCastArrayUDF extends GenericUDF {
 
     @Override
     public Object evaluate(DeferredObject[] args) throws HiveException {
-        try {
-            List jsonlist = jsonlistInspector.getList(args[0].get());
-            List keylist = listInspector.getList(args[1].get());
+            List<String> jsonlist = (List<String>) jsonlistInspector.getList(args[0].get());
+            List<String> keylist = (List<String>) listInspector.getList(args[1].get());
             if (args.length == 2) {
                 return evaluate(jsonlist, keylist);
             } else if (args.length == 3) {
@@ -63,25 +62,21 @@ public class JsonCastArrayUDF extends GenericUDF {
                 return null;
             }
 
-        }catch (Exception e){
-            LOG.error("Exception");
-            return null;
         }
-    }
+
 
     //双参数evaluate
     public List<String> evaluate(List<String> jsonarray, List<String> array) {
         return evaluate(jsonarray,array,"&");
     }
     public List<String> evaluate(List<String> jsonarray, List<String> array,String splitstr) {
-        StringBuilder sb = new StringBuilder();
+
         List<String> list = new ArrayList<String>();
         for (String value : jsonarray) {
             StringBuilder s = new StringBuilder();
             List<String> list1=new ArrayList<String>();
             boolean flag=true;
             for (int j = 0; j < array.size(); ++j) {
-                System.out.println(array.get(j));
                 String [] arr=array.get(j).split("\\.");
                 String a="null";
                 //判断是 普通str||jsonobject||jsonarray
